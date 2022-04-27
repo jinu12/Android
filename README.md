@@ -149,5 +149,164 @@
       println("num1$num1")
       println("num2$num2")
   }
+- if 
+  ```kotlin
+  /*
+  val num1:Int = 100
+
+  if(조건) {
+      조건이 만족하는 겨우 실행 문장
+  }
+
+  if(조건) {
+      조건이 만족하는 경우 실행 문장
+  }else {
+      조건이 만족하지 않는 경수 실행 문장
+  }
+  if(조건) {
+
+  }else if(조건2) {
+
+  }else if(조건3) {
+
+  }else {
+
+  }
+  */
+    var sc: Scanner = Scanner(System.`in`)
+    print("숫자입력:")
+    val num1:Int = sc.nextInt()
+
+    if(num1 == 100) {
+        println("조건이 같다.")
+    }
+    if(num1 != 100) {
+        println("조건이 틀리다.")
+    }
+
+    if(num1 <= 90) {
+        println("성공")
+    }else {
+        println("실패")
+    }
+
+    if(num1>100 || num1 < 0) {
+        println("잘못입력했습니다.")
+    }else {
+        if (num1 >= 90) {
+            println("A")
+        } else if (num1 >= 80) {
+            println("B")
+        } else if (num1 >= 70) {
+            println("C")
+        } else if (num1 >= 60) {
+            println("D")
+        } else {
+            println("F")
+        }
+
+    }
+  
+  ```
+- loop
+  ```kotlin
+      // 반복문
+    // for, while, do-while
+    // 코드의 반복, 배열과 같은 값을 관리 ..
+    // for 문
+    /* *for(변수 in 컬랙션) {
+            -------------
+            배열과 같이 앖을 여러 개 저자알 수 있는 변수
+        반복해서 실행할 명령문
+     */
+
+    val numList = 1..10
+    for (i in numList) {
+        println("i:$i")
+    }
+
+    println("=====================================")
+    val numList2 = 1..10 step 2
+    for (i in numList2) {
+        println("i:$i")
+    }
+
+    println("=====================================")
+    val numList3 = 10 downTo 1
+    for (i in numList3) {
+        println("i:$i")
+    }
+
+    println("=====================================")
+    val numList4 = 10 downTo 1 step 2
+    for (i in numList4) {
+        println("i:$i")
+    }
+
+    // arrayOf를 이용해서 배열을 생성
+    val myArr = arrayOf(10, 20, 30, 40, 50)
+    test(myArr)
+
+    // while 문 - 조건을 만족하는 경우 명령문을 반복해서 실행
+    /* while(조건식){
+            반복해서 실행할 명령문
+        }
+     */
+    // while 문 조건을 만족하지 않으면 {}명령문은 실행할 수 없다.
+    println()
+    println("++++++++++++++++++++++++++++++++++++++")
+    var num1 = 10
+    while (num1 < 10) {
+        println("$num1")
+        num1++
+    }
+    // 조건이 만족하지 않아도 do while 문을 작성하면
+    do {
+        println("$num1")
+        num1++
+    } while (num1 < 10)
+  ```
+- when 
+  ```kotlin
+    // when 구문 -> 다중분기(if ~ else, if, switch)
+    // 사이값을 비교하는 경우 if~else if
+    // 정확하게 일치하는 값을 비교한 값들이 적은 경우 사용
+    // when(변수 or 연산식 or 메소드호출문) {
+    //  -------------------------------
+    //           결과가 값으로 리턴
+    // 값1 -> 결과가 값1이면 실행할 명령문
+    // 값2 -> 결과가 값2이면 실행할 명령문
+    // 값3 -> {
+    //       실행할 문장이 여러개인 경우 {}안에 사용가능
+    //}
+    // 값4, 값4 - > 값4 이거나 값5인 경우 실행할 문장
+    // else -> 나머지
+
+    val num1: Int = 4
+
+    when(num1) {
+        1 -> println("num1은 1")
+        2 -> println("num1은 2")
+        3 -> println("num1은 3")
+        else -> println("해당 사항 없음")
+    }
+
+    when(num1) {
+        1 -> println("num1은 1")
+        2 -> {
+            println("num1은 2")
+            println("여러줄 명령문")
+        }
+        3 -> println("num1은 3")
+        4,5 -> println("4이거나 5입니다")
+        else -> println("해당사항 없음")
+    }
+
+    val num2 = 7
+    when (num2) {
+        in 1..3 -> println("1부터 3")
+        in 4..7 -> println("4부터 7")
+        in 8..10 -> println("8부터 10")
+    }
   ```
 

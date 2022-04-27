@@ -1,5 +1,7 @@
 package com.multicamp.helloworld.basic
 
+import java.util.*
+
 // 1. 구구단을 입력 받아서 출력할 수 있도록 함수를 정의 하세요.
 // 매개변수 : 출력할 단 매개변수는 타입 int 리턴값 : 없음
 // 2. 두 수를 입력 받아 더해서 리턴하는 함수를 정의하기
@@ -8,14 +10,18 @@ package com.multicamp.helloworld.basic
 
 // 1.
 fun main() {
-    gugu(9)
-    sum(1,5)
+    val sc:Scanner = Scanner(System.`in`)
+    print("단 : ")
+    val dan:Int = sc.nextInt()
+    multiplication(dan)
+    val total : Int = sum(1,5)
+    println("total :  $total")
 }
 
-fun gugu(num:Int) {
+fun multiplication(num:Int) {
     for (i in 1..9) {
         val result = num * i
-        println("$num * "+ i + " = $result" )
+        println("$num * $i = $result" )
     }
 }
 
