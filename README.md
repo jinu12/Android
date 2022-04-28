@@ -100,6 +100,19 @@
   //!!는 null을 허용했지만 이 시점에서 null이 아님을 보장하겠다는 의미
 
   ```
+- Scanner
+  ```kotlin
+    val sc = Scanner(System.`in`)
+    print("문장을 입력해주세요")
+    val line = sc.nextLine()
+    print("성명: ")
+    val name = sc.next()
+    print("나이: ")
+    val age = sc.nextInt()
+
+    println(line)
+    println("name:$name,age:$age")
+  ```
 - 함수 
   ```kotlin
   fun main() {
@@ -308,5 +321,118 @@
         in 4..7 -> println("4부터 7")
         in 8..10 -> println("8부터 10")
     }
+  ```
+- 코틀린에서 null 관리
+  ```kotlin
+  // 코틀린에서 Null 관리
+  fun main() {
+      // null 없는 경우 상관없는데 null 이 있는 경우 에러
+      // var num1:Int ? = 10
+      // var num2:Int = num1!!
+      testnull2("문자열")
+      testnull2(null)
+
+      testnull("문자열")
+      testnull(null)
+  }
+
+  fun testnull(str:String?) {
+      val value1:String = str!! // 문법적 오류는 해결, !!는 null에 대한 안정성을 보장 받을 수 없다.
+      println("value1:$str") // 문법적
+  }
+  fun testnull2(str:String?) {
+      //
+      val value1:String = str?:"기본값" // 변수에 null이 없으면 전달된 값을 할당하고 null이 있는 경우 기본값을 할당할 수 있도록 구현
+      println("value1:$str")
+  }
+
+  ```
+- 생성자
+  ```kotlin
+    fun main() {
+    val obj1 = Customer()
+    obj1.name = "hello"
+    println("성명:${obj1.name}")
+    val obj2 = Customer("jinu",2)
+    val obj3 = Customer("hello",3,"010")
+    obj1.print()
+    obj2.print()
+    obj3.print()
+
+  }
+
+  // 생성자 작성 방법 - 1. 기본방법
+  /*
+  - 생성자는 매개변수 개수, 매개변수 타입을 다르게 추가해서 여러 개를 정의 할 수 있다.
+  - 클래스 내부에 생성자를 정의하지 않으면 매개변수가 없는 생성자가 제공된다.
+  - 클래스를 정의하면 코틀린 내부에서 자바코드로 변환될 때 자동으로 setter/getter 메소드가 만들어진다.
+  */
+  class Customer {
+    var name:String = ""
+    private var age = 0
+    private var telNum = ""
+    init {
+        // 객체가 생성될때 실행해야 하는 기능 - 코틀린에서는 생성자에 멤버변수 초기화를 정의한다.
+        println("객체가 생성될때 처리하")
+    }
+    
+    constructor() {
+        println("매개변수가 없는 생성자")
+    }
+
+    constructor(name:String, age:Int){
+        // 생성자 내부에서 멤버변수의 값을 초기화
+        this.name = name
+        this.age = age
+        println("매개변수 2개 생성자")
+    }
+
+    constructor(name:String, age:Int, telNum:String) {
+        this.name = name
+        this.age = age
+        this.telNum = telNum
+        println("매개변수 3개 생성자")
+
+    }
+
+    fun print() {
+        println("print=>name:$name, age:$age, telNum:$telNum")
+      }
+    }
+  ```
+- 상속
+  ```kotlin
+  fun main() {
+    var obj = SubA()
+    println("===================================")
+    println("부모클래스의 멤버:${obj.superVal}")
+    obj.superDisplay()
+  }
+  // 코틀린에서 만드는 클래스는 final 클래스이므로 상속을 하기 위해서는 final 을 해제
+  // open 키워드를 클래스 언언부에 추가
+  open class SuperA{
+      var superVal = 100
+      constructor() {
+          println("부모클래스의 생성자")
+      }
+      open fun superDisplay() {
+          println("super 클래스의 display()")
+      }
+  }
+  class SubA : SuperA{ //SubA가 SuperA 클래스를 상속한다
+      var subVal = 100
+      constructor():super() { //SubA의 매개변수 없는 생성자를 호출하기 전에 부모클래스의 생성자를 호출
+          println("자식클래스의 생성자")
+      }
+      fun subDisplay() {
+          println("sub클래스이 display()")
+      }
+      // 메소드 오버라이딩 - 1. override 키워드를 메소드 선우부에 추가
+      //                   2. 오버라이드 하려는 부모 클랫의 메소드 선언부에 open을 추가한다.
+      //                   3. 부모 클래스의 메소드를 재정의 하면 부모클랫의 메소드가 호출되지 않고 재정의된 메소드가 호출된다.
+      override fun superDisplay() {
+          println("Super클래스")
+      }
+  }
   ```
 
