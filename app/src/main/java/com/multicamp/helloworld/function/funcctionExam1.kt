@@ -1,4 +1,4 @@
-package com.multicamp.helloworld.basic
+package com.multicamp.helloworld.function
 
 import java.util.*
 
@@ -10,11 +10,11 @@ import java.util.*
 
 // 1.
 fun main() {
-    val sc:Scanner = Scanner(System.`in`)
+    val sc = Scanner(System.`in`)
     print("단 : ")
     val dan:Int = sc.nextInt()
     multiplication(dan)
-    val total : Int = sum(1,5)
+    val total : Int = sum(1, 5)
     println("total :  $total")
 }
 
@@ -26,7 +26,7 @@ fun multiplication(num:Int) {
 }
 
 fun sum(num:Int, num2:Int):Int {
-    var result:Int ? = null
+    var result:Int ?= null
     result = num + num2
     return result
 }
