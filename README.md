@@ -55,6 +55,8 @@
 
 ### 코틀린 기초 문법
 
+<a href="./kotlin/kotlinDocs.md"> 바로보기 </a>
+
 - 변수
   ```kotlin
   // val(value), var(variable)
@@ -470,3 +472,144 @@
     }
   ```
 
+## 개요
+
+### 1. 4대 요소
+
+  - Activity : 화면
+  - Serivce : 화면에 보이지 않는 부분
+  - Broadcast Receiver : action이 발생했을 때 실행되는 것
+  - Content Provider : 데이터 제공
+
+### 2. 구조
+
+1. app
+  - manifests : AndroidMainfest.xml 파일이 있으며, 설정 파일
+  - java : com.example.플젝트명 패키지 내에 실제 소스 파일들을 구성한다.
+  - res
+    - 리소스 파일을 모아놓은 곳(주로 정적인 파일, 웹에서, 웹에서 static과 유사)
+    - default로 만들어지는 것들 외 여러가지가 들어갈 수 있다.
+    - drawable : 그림 관련 파일
+    - layout : 화면 구성 관련 파일(웹에서 html 파일을 모아놓는 templates 폴더와 유사)
+    - mipmap : 앱 아이콘 파일
+    - values : 여러가지 값들을 저장해 놓은 파일, 대표적으로 색깔 문자열을 저장한 파일들이 있다.
+
+## Event 처리
+
+- 각 위젯별로 이벤트가 발생할 때 실행될 리스너의 메소드들이 정의되어 있으며 이벤트를 처리하기 위해서 리스너 상속받아 메소드를 오버라이딩해서 처리하고 싶은 일들을 구현한다.
+
+### click 이벤트인 경우 (권하지 않는 방법)
+
+1. 이벤트가 발생하면 실행될 메소드를 정의
+2. 레이아웃 리소스인 xml파일에서 onClick 속성에 메소드를 연결
+   - android:onClick = "메소드명"
+### 기본 방법 
+1. setContentView에 의해서 xml에 등록되어 있는 위젯이 초기화되어 객체로 생성되고 액티비티에 배치되어야 위젯을 가져올 수 있다.
+2. 이벤트를 연결하고 싶은 위젯을 멤버변수로 선언
+3. findViewById 메소드를 이용해서 해당 id로 정의한 객체를 찾아오기
+4. 이벤트가 발생했을때 실행할 기능을 구현하기 위해서 리스너 클래스를 상속해서 이벤트 핸들러 클래스를 만든다.
+=> 리스너를 구현한 클래스를 별도의 클래스로 정의해도 좋지만, 이렇게 작업을 하면 액티비티의 위젯들을 컨트롤하기 위해서 엑티비티의 정보를 리스너에 넘겨주어야 한다. (불편)
+=> 따라서, 액티비티가 리스너를 상속하도록 작성하는 것이 일반적
+5. 뷰(위젯)와 이벤트를 연결한다.
+- 뷰객체.setXXXListenr(리스너 객체)
+  - 우리가 만든 리스너 클래스를 객체생성해서 연결
+  - 액티비티가 리스너를 상송하도록 한 경우, this 입력하면 된다.
+
+### xml 파일을 import해서 처리
+
+- build.grade 파일(모듈)에 플러그인을 등록해서 설치하고 작업해야 한다.(id 'kotlin-android-extensions')
+1. 기본 방법과 동일하나
+2. xml을 액티비티에서 import하면 findViewById로 xml에 정의된 위젯들을 가져오지 않아도 된다.
+3. 바로 xml에서 각각의 뷰에 정의한 id명으로 뷰들을 여결해서 사용할 수 있다.
+
+### 익명 클래스를 만들어서 처리
+
+- 1번과 같은 방법을 사용하면 번거롭다. 따라서, 짧게 작업할 수 있도록 위젯과 익명클래스를 만들고 바로 연결 
+- 뷰 객체.setOnClickListener(object:View.OnclickListener) {
+                - object 객체는 View.OnClickListener을 상속하는 이름없는 클래스의 객체
+                - object 객체는 View.OnClickListener의 하위객체이므로, Context 객체의 하위객체가 X
+  override fun onClick(v:View?) {
+    버튼이 눌렸을 때 실행할 명령문
+  }
+}
+
+### 람다를 이용해 익명 클래스를 만들어서 처리
+
+- 3. 의 경우를 람다로 변환하면아래와 같이 실행할 명령문과 {} 안에 넣어줄 수 있다.
+뷰객체.setOnClickListener {
+  버튼이 눌렸을 때 실행할 명령문
+}
+
+```kotlin
+package com.multicamp.layout
+
+import android.os.Bundle
+import android.util.Log
+import android.view.View
+import android.widget.Button
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import kotlinx.android.synthetic.main.activity_find_view_test.*
+import java.util.*
+
+//xml에 추가한 view에 코드를 연결
+/*
+ 1. setContentView에 의해서 xml에 등록되어 있는 위젯이 초기화되어 객체로 생성되고 엑티비티에 배치되어야 위젯을 가져올 수 있다.
+ 2. 이벤트를 연결하고 싶은 위젯을 멤버변수로 선언
+ 3. findViewById 메소들르 이용해서 해당 id로 정의한 객체를 찾아오기
+ 4. 이벤트가 발생했을때 실행될 기능을 구현하기 위해서 리스너 클래스를 상속해서 이벤트 클래스를 만든다.
+ 5. 뷰(위젯)와 이벤트를 연결한다.
+    뷰객체.setXXXListener(리스너객체)
+                         ----------
+                          우리가 만든 리스너 클래스를 객체 생성해서 연결
+ */
+
+class FindViewTestActivity : AppCompatActivity(), View.OnClickListener {
+    var mybtn: Button? = null
+    var txtresult:TextView?=null
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        // R 클래스는 안드로이드 내부에서 리소스를 관리하는 객체 - 안드로이드가 자동으로 생성해주는 클래스
+        // res 폴더안에 저장하는 모든 파일들, String.xml에 정의하는 문자열, id속성..... 많은 것들을
+
+        setContentView(R.layout.activity_find_view_test)
+        // 1) click 이벤트 xml에서 onClick 속성에 메소드를 연결
+        // 2) 직접찾아오기
+        mybtn = findViewById(R.id.btnClick)
+        txtresult = findViewById(R.id.text)
+
+        /*
+        var listener = MyListener()
+        mybtn?.setOnClickListener(listener)
+         */
+        btnxmlimport.setOnClickListener(this)
+        mybtn?.setOnClickListener(this) // 액티비티이면서 리스너
+
+        btnanonymous.setOnClickListener(object : View.OnClickListener{
+            override fun onClick(v:View?) {
+                // this는 Context의 하위가 아니라 View.OnclcikListener의 하위이므로 getApplicationContext() 메소드를 이용해서
+                // Context 객체를 넘긴다.
+                Toast.makeText(applicationContext,"익명클래스로 리스너구현", Toast.LENGTH_LONG).show()
+            }
+
+        })
+            // 4. 람다로 익명리스너클래스를 만들어서 작업하기
+        btnAnonymousLambda.setOnClickListener {
+            Toast.makeText(applicationContext, "4번 방법으로 이벤트 처리 완료..", Toast.LENGTH_SHORT).show()
+            Log.d("test", "4번 방법으로 이벤트 처리 완료..")
+            btnAnonymousLambda.text = "4번 방법으로 이벤트 처리 완료.."
+        }
+    }
+
+    override fun onClick(v: View?) {
+        Log.d( "test",v?.id.toString()) // v.getId()의 결과가 int이므로 toString() 을 호출해서 String 으로 변환
+        if(v?.id == R.id.btnClick) {
+            mybtn?.text = Date().toString()
+            Toast.makeText(this, "android event test...", Toast.LENGTH_LONG).show()
+        }else if(v?.id ==R.id.btnxmlimport) {
+            result.setImageResource(R.drawable.img01)
+        }
+    }
+}
+```
