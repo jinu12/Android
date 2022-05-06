@@ -198,3 +198,66 @@ class FindViewTestActivity : AppCompatActivity(), View.OnClickListener {
     }
 }
 ```
+
+## 안드로이드에서 MQTT
+
+### 1. build.gradle(module)파일에 라이브러리 등록 (dependencies 목록에 추가) 및 Sync now 클릭
+
+```kotlin
+implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.0'
+implementation 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
+```
+
+### 2. MQTT는 외부 서버와 통신을 하기 때문에 권한 추가
+
+- AndroidManifest.xml 파일에 추가
+
+```kotlin
+<!--인터넷 접속할 수 있는 권한-->
+<uses-permission android:name="android.permission.INTERNET"/>
+<!--네트워크에 연결됐는지 확인할 수 있게 하는 권한-->
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+<!--디바이스가 sleep 상태에 빠지지 않도록-->
+<uses-permission android:name="android.permission.WAKE_LOCK"/>
+```
+
+### 3. MQTT 라이브러리 내부에서는 제공되는 Service 클래스를 AndroidMainfest.xml 파일에 추가
+
+- 백그라운드에서 지속적으로 연결을 수행하는 기능이 구현된 라이블러리에서 제공하는 안드로이드 클래스
+- LoopForever와 같은 기능을 별도로 주지 않도록
+
+```kotlin
+<service android:name="org.eclipse.paho.android.service.MqttService"/>
+```
+
+### 4. MQTT 통신을 수행할 클래스를 만들고 기능 구현하기
+
+1. 클라이언트 객체 생성
+2. callback 메소드 정의하고 등록
+3. connect: connect 하면서 subscribe 하기 위해 topic 등록
+   
+### 5. publish 할 수 있도록 구현하기
+
+- Message 객체 만들어서 publish
+- publish 한 후 콜백이 필요한 경우 등록
+
+### 6. 서버와의 통신을 하면서 문제없이 통신을 하고 있는지 확인 위해 callback 메소드를 작성하고 등록하고 사용
+
+- IMqttActionListener의 하위를 작성하고 등록
+- 서버와 connect 후 결과 확인
+- publish 후 확인
+- subscribe 후 확인 
+
+## 호출한 곳으로 되돌아 올 때 값을 가져오는 경우 인텐트의 작업
+
+### 1. 호출한 액티비티 - ReturnDataFirstAcitivity
+
+1. startActivittyForResult 메소드를 호출하며 인텐트와 request 코드를 셋팅
+  - request 코드
+    - 액티비티안엣 어떤 위젯이 요청할 것인지 알기 위해 설정
+    - 어디서 작업했든 값을 가지고 되돌아오는 경우 무조건 onActivityResult 가 호출
+    - onActivityResult 메소드는 하나......
+    - 여러 개의 액티비티에서 되돌아온다면.... 어떤 작업에 대한 리턴인지 알 수 없다.
+2. startActivityForResult 메소드가 호출되면서 setResult 에서 넘겨준 인텐트가 전달되면 여기서 공유된 데이터를 꺼낼 수 있다.
+
+### 2. 호출된 액티비티 - ResultDataSecondActivity
